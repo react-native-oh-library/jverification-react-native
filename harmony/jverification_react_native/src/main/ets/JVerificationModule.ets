@@ -343,7 +343,7 @@ export class JVerificationModule extends TurboModule implements TM.JVerification
       .setLogBtnWidth(customConfigParams.loginBtnW)
       .setLogBtnHeight(customConfigParams.loginBtnH)
       .setLogBtnTextSize(customConfigParams.loginBtnTextSize)
-      .setLogBtnTextBold(customConfigParams.logBtnTextBold)
+      .setLogBtnTextBold(customConfigParams.loginBtnTextBold)
       // 隐私协议部分
       .setPrivacyColor(customConfigParams.privacyColor[0], customConfigParams.privacyColor[1])
       .setPrivacyMargin(customConfigParams.privacyMargin)

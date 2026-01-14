@@ -47,32 +47,6 @@ export interface Margin {
   right: number;
 }
 
-export interface Margin {
-  top: number,
-  bottom: number,
-  left: number
-  right: number
-}
-
-export interface AlignRuleOption {
-  left: {
-    anchor: string;
-    align: number;
-  },
-  right: {
-    anchor: string;
-    align: number;
-  };
-  middle: {
-    anchor: string;
-    align: number;
-  },
-  top: {
-    anchor: string;
-    align: number;
-  };
-}
-
 export interface Rectangle {
   x: string|number;
   y: string|number;
@@ -104,22 +78,20 @@ export interface CustomConfigParams {
   backgroundImage: string;
   // 弹窗
   showWindow: boolean;
-  dialogWidth: number;
-  dialogHeight: number;
   dialogColor: number;
   maskRect: Rectangle;
   // 安全区域
   topSafeAreaHeight: number;
   bottomSafeAreaHeight: number;
   // 返回按钮
-  setReturnBtnImgPath: string;
-  setReturnBtnHidden: boolean;
-  setReturnBtnWidth: number;
-  setReturnBtnHeight: number;
-  setReturnBtnOffsetX: number;
-  setReturnBtnOffsetY: number;
+  returnBtnImgPath: string;
+  returnBtnHidden: boolean;
+  returnBtnWidth: number;
+  returnBtnHeight: number;
+  returnBtnOffsetX: number;
+  returnBtnOffsetY: number;
   // 手机号样式
-  setNumberTextBold: boolean;
+  numberTextBold: boolean;
   numberSize: number;
   numberColor: number;
   numberX: number;
@@ -138,7 +110,7 @@ export interface CustomConfigParams {
   sloganTextSize: number;
   sloganX: number;
   sloganY: number;
-  setSloganTextBold: boolean;
+  sloganTextBold: boolean;
   sloganHidden: boolean; // SDK无此属性
   sloganW: number; // SDK无此属性
   sloganH: number; // SDK无此属性
@@ -157,7 +129,7 @@ export interface CustomConfigParams {
   loginBtnH: number;
   loginBtnDisabledTextColor: number;
   loginBtnDisabledColor: number;
-  logBtnTextBold: boolean;
+  loginBtnTextBold: boolean;
   loginBtnBorderColor: number;
   loginBtnDisabledBorderColor: number;
   loginBtnBorderWidth: number;
@@ -192,15 +164,14 @@ export interface CustomConfigParams {
   privacyWebNavTitleSize: number;
   privacyWebNavTitleColor: number;
   privacyWebNavReturnImage: string;
-  setPrivacyNavTitleTextBold: boolean;
+  PrivacyNavTitleTextBold: boolean;
   // 状态栏模式
   statusBarMode: string;
   navColor: number;
   navTitleColor: number;
   // CM
-  borderRadius: number;
+  loginBtnBorderRadius: number;
   checkBoxShape: number;
-  setCheckBoxMargin: Margin;
   checkTipText: string;
   clauseNavMarginTop: number;
   // 未使用到的
