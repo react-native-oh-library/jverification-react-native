@@ -75,8 +75,6 @@ export interface CustomConfigParams {
   backgroundImage: string;
   // 弹窗
   showWindow: boolean;
-  dialogWidth: number;
-  dialogHeight: number;
   dialogColor: number;
   maskRect: Rectangle;
   // 安全区域
@@ -128,7 +126,7 @@ export interface CustomConfigParams {
   loginBtnH: number;
   loginBtnDisabledTextColor: number;
   loginBtnDisabledColor: number;
-  logBtnTextBold: boolean;
+  loginBtnTextBold: boolean;
   loginBtnBorderColor: number;
   loginBtnDisabledBorderColor: number;
   loginBtnBorderWidth: number | string;
