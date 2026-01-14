@@ -1,0 +1,11 @@
+[
+    {
+        "Name": "jverification-react-native",
+        "License": "MIT License",
+        "License File": "https://github.com/jpush/jverification-react-native/blob/v2.4.6/LICENSE",
+        "Version Number": "2.4.6",
+        "Owner" : "xiafeng@huawei.com",
+        "Upstream URL": "https://github.com/jpush/jverification-react-native/tree/v2.4.6",
+        "Description": "Provide one click login authentication function"
+    }
+]

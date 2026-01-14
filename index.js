@@ -1,10 +1,12 @@
 import {
-    DeviceEventEmitter,
+    NativeEventEmitter,
     NativeModules,
     Platform,
 } from 'react-native';
 
-const JVerificationModule = NativeModules.JVerificationModule;
+import JVerificationModule from "./src/NativeJVerification";
+
+const DeviceEventEmitter = new NativeEventEmitter(JVerificationModule);
 
 const listeners = {};
 const LoginEvent = 'LoginEvent';  //登录事件

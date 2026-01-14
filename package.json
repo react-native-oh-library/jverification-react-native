@@ -1,21 +1,33 @@
 {
-  "name": "jverification-react-native",
+  "name": "@react-native-ohos/jverification-react-native",
   "description": "React Native JVerification component for Android and iOS",
-  "homepage": "https://github.com/jpush/jverification-react-native",
+  "homepage": "https://github.com/react-native-oh-library/jverification-react-native",
   "main": "index.js",
   "license": "ISC",
   "author": "wicked.tc130",
-  "version": "2.4.8",
+  "version": "2.4.6",
   "repository": {
     "type": "git",
-    "url": "https://github.com/jpush/jverification-react-native"
+    "url": "https://github.com/react-native-oh-library/jverification-react-native.git"
   },
   "keywords": [
     "react-native",
     "JVerification"
   ],
+  "scripts": {
+    "codegen-lib": "react-native codegen-lib-harmony --no-safety-check --npm-package-name jverification_react_native --cpp-output-path ./harmony/jverification_react_native/src/main/cpp/generated --ets-output-path ./harmony/jverification_react_native/src/main/ets/generated --turbo-modules-spec-paths ./src/NativeJVerification.ts"
+  },
+  "dependencies": {
+    "metro": "0.76.9",
+    "memfs": "4.17.2",
+    "react-native-harmony-cli": "npm:@react-native-oh/react-native-harmony-cli@^0.0.27",
+    "@react-native-community/cli": "11.4.1"
+  },
   "peerDependencies": {
     "jcore-react-native": ">= 1.5.0",
     "react-native": ">= 0.60"
+  },
+  "harmony": {
+    "alias": "jverification-react-native"
   }
 }
