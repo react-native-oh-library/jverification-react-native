@@ -1,0 +1,9 @@
+{
+  "module": {
+    "name": "jverification_react_native",
+    "type": "har",
+    "deviceTypes": [
+      "default"
+    ]
+  }
+}
