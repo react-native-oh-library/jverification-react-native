@@ -40,58 +40,12 @@ export interface VerifyCodeResult {
   msg: string;
 }
 
-export interface Margin {
-  top: number;
-  bottom: number;
-  left: number;
-  right: number;
-}
-
-export interface Rectangle {
-  x: string|number;
-  y: string|number;
-  width: string|number;
-  height: string|number;
-}
-
-export interface AlignRuleOption {
-  left: {
-    anchor: string;
-    align: number;
-  },
-  right: {
-    anchor: string;
-    align: number;
-  };
-  middle: {
-    anchor: string;
-    align: number;
-  },
-  top: {
-    anchor: string;
-    align: number;
-  };
-}
-
 export interface CustomConfigParams {
   // 背景图片
   backgroundImage: string;
   // 弹窗
   showWindow: boolean;
-  dialogColor: number;
-  maskRect: Rectangle;
-  // 安全区域
-  topSafeAreaHeight: number;
-  bottomSafeAreaHeight: number;
-  // 返回按钮
-  returnBtnImgPath: string;
-  returnBtnHidden: boolean;
-  returnBtnWidth: number;
-  returnBtnHeight: number;
-  returnBtnOffsetX: number;
-  returnBtnOffsetY: number;
   // 手机号样式
-  numberTextBold: boolean;
   numberSize: number;
   numberColor: number;
   numberX: number;
@@ -110,7 +64,6 @@ export interface CustomConfigParams {
   sloganTextSize: number;
   sloganX: number;
   sloganY: number;
-  sloganTextBold: boolean;
   sloganHidden: boolean; // SDK无此属性
   sloganW: number; // SDK无此属性
   sloganH: number; // SDK无此属性
@@ -118,7 +71,6 @@ export interface CustomConfigParams {
   loginBtnText: string;
   loginBtnTextSize: number;
   loginBtnTextColor: number;
-  loginBtnColor: number;
   loginBtnImage: string;
   loginBtnNormalImage: string; // SDK无此属性
   loginBtnDisabledImage: string; // SDK无此属性
@@ -127,16 +79,8 @@ export interface CustomConfigParams {
   loginBtnY: number;
   loginBtnW: number;
   loginBtnH: number;
-  loginBtnDisabledTextColor: number;
-  loginBtnDisabledColor: number;
-  loginBtnTextBold: boolean;
-  loginBtnBorderColor: number;
-  loginBtnDisabledBorderColor: number;
-  loginBtnBorderWidth: number;
-  loginBtnDisabledBorderWidth: number;
   // 隐私协议
   privacyColor: Array<number>;
-  privacyMargin: Margin;
   privacyText: Array<string>;
   privacyUncheckedImage: string;
   privacyCheckedImage: string;
@@ -144,36 +88,21 @@ export interface CustomConfigParams {
   privacyTextGravityMode: string;
   privacyTextSize: number;
   privacyCheckboxSize: number;
-  checkboxX:number;
-  checkboxY:number;
-  privacyCheckboxInCenter: boolean;
-  enableHintToastText: string;
-  privacyTextBold: boolean;
-  privacyUnderlineText: boolean;
   privacyOne: Array<string>;
   privacyTwo: Array<string>;
   privacyBookSymbolEnable: boolean;
   privacyX: number;
   privacyY: number;
-  clauseAlignRuleOption: AlignRuleOption;
-  // numberAlignRuleOption:object;
-  // loginBtnAlignRuleOption:object;
   // 隐私协议页面
   privacyWebNavColor: number;
   privacyWebNavTitle: string; // SDK未提供
   privacyWebNavTitleSize: number;
   privacyWebNavTitleColor: number;
   privacyWebNavReturnImage: string;
-  PrivacyNavTitleTextBold: boolean;
   // 状态栏模式
   statusBarMode: string;
   navColor: number;
   navTitleColor: number;
-  // CM
-  loginBtnBorderRadius: number;
-  checkBoxShape: number;
-  checkTipText: string;
-  clauseNavMarginTop: number;
   // 未使用到的
   privacyW: number;
   privacyH: number;

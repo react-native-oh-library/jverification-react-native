@@ -37,58 +37,12 @@ export interface VerifyCodeParams {
   tempid: string;
 }
 
-export interface Rectangle {
-  x: string|number;
-  y: string|number;
-  width: string|number;
-  height: string|number;
-}
-
-export interface AlignRuleOption {
-  left: {
-    anchor: string;
-    align: number;
-  },
-  right: {
-    anchor: string;
-    align: number;
-  };
-  middle: {
-    anchor: string;
-    align: number;
-  },
-  top: {
-    anchor: string;
-    align: number;
-  };
-}
-
-export interface Margin {
-  top: number,
-  bottom: number,
-  left: number
-  right: number
-}
-
 export interface CustomConfigParams {
   // 背景图片
   backgroundImage: string;
   // 弹窗
   showWindow: boolean;
-  dialogColor: number;
-  maskRect: Rectangle;
-  // 安全区域
-  topSafeAreaHeight: number;
-  bottomSafeAreaHeight: number;
-  // 返回按钮
-  returnBtnImgPath: string;
-  returnBtnHidden: boolean;
-  returnBtnWidth: number;
-  returnBtnHeight: number;
-  returnBtnOffsetX: number;
-  returnBtnOffsetY: number;
   // 手机号样式
-  numberTextBold: boolean;
   numberSize: number;
   numberColor: number;
   numberX: number;
@@ -107,33 +61,23 @@ export interface CustomConfigParams {
   sloganTextSize: number;
   sloganX: number;
   sloganY: number;
-  sloganTextBold: boolean;
-  sloganHidden: boolean; // SDK无此属性
-  sloganW: number; // SDK无此属性
-  sloganH: number; // SDK无此属性
+  sloganHidden: boolean;
+  sloganW: number;
+  sloganH: number;
   // 登录按钮
   loginBtnText: string;
   loginBtnTextSize: number;
   loginBtnTextColor: number;
-  loginBtnColor: number;
   loginBtnImage: string;
-  loginBtnNormalImage: string; // SDK无此属性
-  loginBtnDisabledImage: string; // SDK无此属性
-  loginBtnSelectedImage: string; // SDK无此属性
+  loginBtnNormalImage: string;
+  loginBtnDisabledImage: string;
+  loginBtnSelectedImage: string;
   loginBtnX: number;
   loginBtnY: number;
   loginBtnW: number;
   loginBtnH: number;
-  loginBtnDisabledTextColor: number;
-  loginBtnDisabledColor: number;
-  loginBtnTextBold: boolean;
-  loginBtnBorderColor: number;
-  loginBtnDisabledBorderColor: number;
-  loginBtnBorderWidth: number | string;
-  loginBtnDisabledBorderWidth: number | string;
   // 隐私协议
   privacyColor: Array<number>;
-  privacyMargin: Margin;
   privacyText: Array<string>;
   privacyUncheckedImage: string;
   privacyCheckedImage: string;
@@ -141,34 +85,22 @@ export interface CustomConfigParams {
   privacyTextGravityMode: string;
   privacyTextSize: number;
   privacyCheckboxSize: number;
-  checkBoxX:number;
-  checkBoxY:number;
-  privacyCheckboxInCenter: boolean;
-  enableHintToastText: string;
-  privacyTextBold: boolean;
-  privacyUnderlineText: boolean;
   privacyOne: Array<string>;
   privacyTwo: Array<string>;
   privacyBookSymbolEnable: boolean;
   privacyX: number | string;
   privacyY: number | string;
-  clauseAlignRuleOption: AlignRuleOption;
   // 隐私协议页面
   privacyWebNavColor: number;
-  privacyWebNavTitle: string; // SDK未提供
+  privacyWebNavTitle: string;
   privacyWebNavTitleSize: number;
   privacyWebNavTitleColor: number;
   privacyWebNavReturnImage: string;
-  privacyNavTitleTextBold: boolean;
   // 状态栏模式
   statusBarMode: string;
   navColor: number;
   navTitleColor: number;
   // CM
-  loginBtnBorderRadius: number;
-  checkBoxShape: number;
-  checkTipText: string;
-  clauseNavMarginTop: number;
   privacyW: number;
   privacyH: number;
   privacyCheckboxHidden: boolean;
@@ -201,5 +133,10 @@ export enum State {
   TEXT_MODE = 'center',
   PREFIX_PATH='app.media.',
   LOGIN_SUCCESS = 6000,
+  NAV_MARGIN_TOP = 38,
+  DIALOG_WIDTH = '80%',
+  DIALOG_HEIGHT = '45%',
+  MASK_WIDTH = '90%',
+  MASK_X = '5%',
+  MASK_Y = '30%'
 }
-

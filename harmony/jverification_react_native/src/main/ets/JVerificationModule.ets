@@ -28,6 +28,7 @@ import {
   PrivacyBean
 } from '@jg/verify';
 import { UIContext, window } from '@kit.ArkUI'
+import { bundleManager } from "@kit.AbilityKit";
 
 let uiContext: UIContext;
 
@@ -45,6 +46,27 @@ export class JVerificationModule extends TurboModule implements TM.JVerification
   // 是否启用日志
   setDebug(enable: boolean): void {
     JVerificationInterface.setDebugMode(enable);
+    this.getSign()
+    this.getAppIdentifier()
+  }
+
+  // 获取应用签名 delete
+  getSign(): string {
+    let bundleFlags = bundleManager.BundleFlag.GET_BUNDLE_INFO_WITH_SIGNATURE_INFO;
+    let bundleInfo = bundleManager.getBundleInfoForSelfSync(bundleFlags);
+    console.log('twx getSign = ',
+      bundleInfo.signatureInfo.fingerprint);
+    return bundleInfo.signatureInfo.fingerprint;
+  }
+
+  // 获取应用唯一标识 delete
+  getAppIdentifier(): void {
+    let bundleFlags = bundleManager.BundleFlag.GET_BUNDLE_INFO_WITH_APPLICATION |
+    bundleManager.BundleFlag.GET_BUNDLE_INFO_WITH_SIGNATURE_INFO;
+    bundleManager.getBundleInfoForSelf(bundleFlags).then((data) => {
+      console.log('twx appIdentifier = ',
+        data.signatureInfo.appIdentifier);
+    })
   }
 
   // 初始化SDK   入参数不一致
@@ -77,7 +99,7 @@ export class JVerificationModule extends TurboModule implements TM.JVerification
     }, time);
   }
 
-  // SDK获取预取号token     返回信息多了operateRet
+  // SDK获取预取号token
   preLogin(time: number, callback: (result: PreLoginResult) => void): void {
     JVerificationInterface.prelogin((code, msg) => {
       callback({ code: code, content: msg });
@@ -93,13 +115,6 @@ export class JVerificationModule extends TurboModule implements TM.JVerification
   getAuthorizationWithController(enable: boolean): void {
     let settings: JVerificationLoginSettings = new JVerificationLoginSettings(uiContext);
     settings.autoFinish = enable;
-
-    /**
-     * 事件监听
-     * 6 协议栏 checkbox 变为选中事件
-     * 7 协议栏 checkbox 变为未选中事件
-     * 8 一键登录按钮（可用状态下）点击事件
-     */
     settings.authPageEventListener = (code: number, msg: string) => {
       Logger.debug('authPageEventListener code: ' + code + ", msg: " + msg);
       switch (code) {
@@ -114,13 +129,13 @@ export class JVerificationModule extends TurboModule implements TM.JVerification
       }
     }
     JVerificationInterface.loginAuth(settings, (code, msg, operatorReturn) => {
-      this.ctx.rnInstance.emitDeviceEvent('LoginEvent', { code: code, msg: msg, operator: operatorReturn })
+      this.ctx.rnInstance.emitDeviceEvent('LoginEvent', { code: code, msg: msg, operator: operatorReturn });
       Logger.debug('getAuthorizationWithController = ' + "code:" + code + ", msg:" + msg + ", operateRet:" +
         operatorReturn);
     })
   }
 
-  // 关闭授权页面   关闭隐私协议二次弹窗JVerificationInterface.closeCheckDialog()
+  // 关闭授权页面
   dismissLoginController(): void {
     JVerificationInterface.dismissLoginAuthActivity(uiContext);
   }
@@ -140,7 +155,7 @@ export class JVerificationModule extends TurboModule implements TM.JVerification
 
     //全屏模式
     if (this.operator === State.OPERATOR_CM) {
-      this.setCustomUICM(builder, systemBarProperties, customConfigParams)
+      this.setCustomUICM(builder, systemBarProperties, customConfigParams);
     } else {
       this.setCustomUI(customConfigParams, builder);
     }
@@ -161,57 +176,54 @@ export class JVerificationModule extends TurboModule implements TM.JVerification
   getCMPrivacyList(customConfigParams: CustomConfigParams): SpanEntity[] {
     let spanList: SpanEntity[] = [];
     let prefixSpan = new SpanEntity();
-    prefixSpan.text = customConfigParams.privacyText[0] ? customConfigParams.privacyText[0] : '';
+    prefixSpan.text = customConfigParams.privacyText ? customConfigParams.privacyText[0] : '';
     prefixSpan.isProtocol = true;
     prefixSpan.fontSize = customConfigParams.privacyTextSize;
     prefixSpan.fontColor = customConfigParams.privacyColor[1] ? customConfigParams.privacyColor[1] : Color.Black;
     spanList.push(prefixSpan);
     let cmSpan = new SpanEntity();
-    cmSpan.text = "《&&Clause&&》";
+    cmSpan.text = customConfigParams.privacyBookSymbolEnable ? "《&&Clause&&》" : "&&Clause&& ";
     cmSpan.isProtocol = true;
-    prefixSpan.fontSize = customConfigParams.privacyTextSize;
-    cmSpan.fontColor = customConfigParams.privacyColor[0] ? customConfigParams.privacyColor[0] : Color.Black;
+    cmSpan.fontSize = customConfigParams.privacyTextSize;
+    cmSpan.fontColor = customConfigParams.privacyColor[0] ? customConfigParams.privacyColor[0] : Color.Blue;
     spanList.push(cmSpan);
-
-    if (customConfigParams.privacyOne && customConfigParams.privacyOne.length === 2) {
-      let spanOne = new SpanEntity();
-      if (customConfigParams.privacyBookSymbolEnable) {
-        spanOne.text = `《${customConfigParams.privacyOne[0]}》`;
-      } else {
-        spanOne.text = `${customConfigParams.privacyOne[0]} `;
-      }
-      spanOne.url = customConfigParams.privacyOne[1];
-      spanOne.isProtocol = true;
-      spanOne.fontSize = customConfigParams.privacyTextSize;
-      spanOne.fontColor = customConfigParams.privacyColor[0] ? customConfigParams.privacyColor[0] : Color.Black;
-      spanList.push(spanOne);
+    let privacyList: Array<Array<string>> = [];
+    if (customConfigParams.privacyOne) {
+      privacyList.push(customConfigParams.privacyOne);
     }
-    if (customConfigParams.privacyTwo && customConfigParams.privacyTwo.length === 2) {
-      let spanTwo = new SpanEntity();
-      if (customConfigParams.privacyBookSymbolEnable) {
-        spanTwo.text = `《${customConfigParams.privacyTwo[0]}》`;
-      } else {
-        spanTwo.text = `${customConfigParams.privacyTwo[0]}`;
-      }
-      spanTwo.url = customConfigParams.privacyTwo[1];
-      spanTwo.isProtocol = true;
-      spanTwo.fontSize = customConfigParams.privacyTextSize;
-      spanTwo.fontColor = customConfigParams.privacyColor[0] ? customConfigParams.privacyColor[0] : Color.Black;
-      spanList.push(spanTwo);
+    if (customConfigParams.privacyTwo) {
+      privacyList.push(customConfigParams.privacyTwo);
+    }
+    for (let privacy of privacyList) {
+      let span = new SpanEntity();
+      span.text = this.handlePrivacyBook(privacy[0], customConfigParams);
+      span.url = privacy[1];
+      span.isProtocol = true;
+      span.fontSize = customConfigParams.privacyTextSize;
+      span.fontColor =
+        customConfigParams.privacyColor && customConfigParams.privacyColor[0] ? customConfigParams.privacyColor[0] :
+          Color.Blue;
+      spanList.push(span);
     }
     let suffixSpan = new SpanEntity();
-    suffixSpan.text = customConfigParams.privacyText[1] ? customConfigParams.privacyText[1] : '';
+    suffixSpan.text =
+      customConfigParams.privacyText && customConfigParams.privacyText[1] ? customConfigParams.privacyText[1] : '';
     suffixSpan.isProtocol = true;
     suffixSpan.fontSize = customConfigParams.privacyTextSize;
-    suffixSpan.fontColor = customConfigParams.privacyColor[1] ? customConfigParams.privacyColor[1] : Color.Black;
+    suffixSpan.fontColor =
+      customConfigParams.privacyColor && customConfigParams.privacyColor[1] ? customConfigParams.privacyColor[1] :
+        Color.Black;
     spanList.push(suffixSpan);
     return spanList;
   }
 
-  // 全屏安全区域
-  setSafeArea(customConfigParams: CustomConfigParams, builder: JVerifyUIConfigBuilder){
-    builder.setTopSafeAreaHeight(customConfigParams.topSafeAreaHeight)
-      .setBottomSafeAreaHeight(customConfigParams.bottomSafeAreaHeight)
+  handlePrivacyBook(privacyText: string, customConfigParams: CustomConfigParams): string {
+    if (customConfigParams.privacyBookSymbolEnable) {
+      privacyText = `《${privacyText}》`;
+    } else {
+      privacyText = `${privacyText} `;
+    }
+    return privacyText;
   }
 
   // 移动ui设置
@@ -227,8 +239,15 @@ export class JVerificationModule extends TurboModule implements TM.JVerification
     // 弹窗模式
     if (customConfigParams.showWindow) {
       builderCM.setWindowMode({
-        maskRect: customConfigParams.maskRect,
-        maskColor: customConfigParams.dialogColor,
+        width: State.DIALOG_WIDTH,
+        height: State.DIALOG_HEIGHT,
+        maskRect: {
+          x: State.MASK_X,
+          y: State.MASK_Y,
+          width: State.MASK_WIDTH,
+          height: State.DIALOG_HEIGHT,
+        },
+        maskColor: Color.White,
         alignment: DialogAlignment.Center,
         isModal: true,
         autoCancel: true,
@@ -237,12 +256,13 @@ export class JVerificationModule extends TurboModule implements TM.JVerification
 
     builderCM
       .setSystemBarProperties(systemBarProperties)
+      .setClauseNavMarginTop(State.NAV_MARGIN_TOP)
       // 隐私协议页面颜色字体
       .setNavTextColor(customConfigParams.privacyWebNavTitleColor)
       .setNavColor(customConfigParams.privacyWebNavColor)
       .setNavTextSize(customConfigParams.privacyWebNavTitleSize)
       // 手机号样式
-      .setNumberSize(customConfigParams.numberSize, customConfigParams.numberTextBold)
+      .setNumberSize(customConfigParams.numberSize, true)
       .setNumberColor(customConfigParams.numberColor)
       .setNumberMargin({ left: customConfigParams.numberX, top: customConfigParams.numberY })
       .setNumberWidth(customConfigParams.numberW)
@@ -251,41 +271,30 @@ export class JVerificationModule extends TurboModule implements TM.JVerification
       .setLogBtnText(customConfigParams.loginBtnText)
       .setLoginBtnTextSize(customConfigParams.loginBtnTextSize)
       .setLoginBtnTextColor(customConfigParams.loginBtnTextColor)
-      .setLoginBtnBorderRadius(customConfigParams.loginBtnBorderRadius)
-      .setLoginBtnColor(customConfigParams.loginBtnColor)
       .setLoginBtnWidth(customConfigParams.loginBtnW)
       .setLoginBtnHeight(customConfigParams.loginBtnH)
-      .setLoginBtnDisabledTextColor(customConfigParams.loginBtnDisabledTextColor)
-      .setLoginBtnDisabledColor(customConfigParams.loginBtnDisabledColor)
       .setLoginBtnMargin({ top: customConfigParams.loginBtnY, bottom: customConfigParams.loginBtnX })
-      .setLoginBtnBorderColor(customConfigParams.loginBtnBorderColor)
-      .setLoginBtnBorderWidth(customConfigParams.loginBtnBorderWidth)
-      .setLoginBtnDisabledBorderWidth(customConfigParams.loginBtnDisabledBorderWidth)
-      .setLoginBtnDisabledBorderColor(customConfigParams.loginBtnDisabledBorderColor)
       // 隐私协议和checkbox
       .setClauses(spanList)
       .setClauseMargin({ left: customConfigParams.privacyX, top: customConfigParams.privacyY })
-      .setPrivacyTextBold(customConfigParams.privacyTextBold)
-      .setisPrivacyTextGravityCenter(customConfigParams.privacyTextGravityMode ?
-        customConfigParams.privacyTextGravityMode.toLowerCase() === State.TEXT_MODE : true)
+      .setClauseAlignRuleOption({
+        middle: { anchor: '__container__', align: HorizontalAlign.Center },
+        center: { anchor: 'clause_checkBox', align: VerticalAlign.Center }
+      })
+      .setCheckBoxAlignRuleOption({
+        left: { anchor: '__container__', align: HorizontalAlign.Start },
+        bottom: { anchor: '__container__', align: VerticalAlign.Bottom }
+      })
+      .setClauseTextAlign(customConfigParams.privacyTextGravityMode === State.TEXT_MODE ? TextAlign.Center :
+        TextAlign.Start)
       .setClauseState(customConfigParams.privacyCheckEnable)
-      .setCheckBoxShape(customConfigParams.checkBoxShape)
-      .setCheckTipText(customConfigParams.checkTipText)
       .setCheckBox(customConfigParams.privacyCheckboxSize, customConfigParams.privacyCheckboxSize)
-      .setCheckBoxMargin({ left: customConfigParams.checkBoxX, bottom: customConfigParams.checkBoxY })
-      .setClauseNavMarginTop(customConfigParams.clauseNavMarginTop)
       .setCheckedColor(Color.Red)
       .setGenCheckedChangeListener({
         onCheckedChanged: (isChecked: boolean) => {
           this.ctx.rnInstance.emitDeviceEvent('UncheckBoxCallBack', { isChecked: isChecked });
         }
       })
-    // .setNumberAlignRuleOption(customConfigParams.numberAlignRuleOption)
-    // .setLoginBtnAlignRuleOption(customConfigParams.loginBtnAlignRuleOption)
-
-    if (customConfigParams.clauseAlignRuleOption !== undefined) {
-      builderCM.setClauseAlignRuleOption(customConfigParams.clauseAlignRuleOption)
-    }
 
     if (imagePathCM) {
       builderCM.setLoginBtnImgPath($r(imagePathCM));
@@ -302,18 +311,10 @@ export class JVerificationModule extends TurboModule implements TM.JVerification
   }
 
   // 联通电信UI设置
-  setCustomUI(customConfigParams: CustomConfigParams, builder: JVerifyUIConfigBuilder){
-    this.setSafeArea(customConfigParams, builder);
+  setCustomUI(customConfigParams: CustomConfigParams, builder: JVerifyUIConfigBuilder) {
     const privacyList = this.getNormalPrivacyList(customConfigParams);
     builder.setAuthBGImgPath(customConfigParams.backgroundImage)
-    // 返回按钮
-      .setReturnBtnImgPath(customConfigParams.returnBtnImgPath)
-      .setReturnBtnHidden(customConfigParams.returnBtnHidden)
-      .setReturnBtnWidth(customConfigParams.returnBtnWidth)
-      .setReturnBtnHeight(customConfigParams.returnBtnHeight)
-      .setReturnBtnOffsetX(customConfigParams.returnBtnOffsetX)
-      .setReturnBtnOffsetY(customConfigParams.returnBtnOffsetY)
-      // logo
+    // logo
       .setLogoHidden(customConfigParams.logoHidden)
       .setLogoImgPath(customConfigParams.logoImage)
       .setLogoOffsetX(customConfigParams.logoX)
@@ -327,13 +328,11 @@ export class JVerificationModule extends TurboModule implements TM.JVerification
       .setNumberFieldOffsetY(customConfigParams.numberY)
       .setNumberFieldWidth(customConfigParams.numberW)
       .setNumberFieldHeight(customConfigParams.numberH)
-      .setNumberTextBold(customConfigParams.numberTextBold)
       // slogan
       .setSloganTextColor(customConfigParams.sloganTextColor)
       .setSloganTextSize(customConfigParams.sloganTextSize)
       .setSloganOffsetX(customConfigParams.sloganX)
       .setSloganOffsetY(customConfigParams.sloganY)
-      .setSloganTextBold(customConfigParams.sloganTextBold)
       // login
       .setLogBtnText(customConfigParams.loginBtnText)
       .setLogBtnTextColor(customConfigParams.loginBtnTextColor)
@@ -343,21 +342,21 @@ export class JVerificationModule extends TurboModule implements TM.JVerification
       .setLogBtnWidth(customConfigParams.loginBtnW)
       .setLogBtnHeight(customConfigParams.loginBtnH)
       .setLogBtnTextSize(customConfigParams.loginBtnTextSize)
-      .setLogBtnTextBold(customConfigParams.loginBtnTextBold)
       // 隐私协议部分
       .setPrivacyColor(customConfigParams.privacyColor[0], customConfigParams.privacyColor[1])
-      .setPrivacyMargin(customConfigParams.privacyMargin)
+      .setPrivacyMargin({
+        left: customConfigParams.privacyX,
+        right: customConfigParams.privacyX,
+        bottom: customConfigParams.privacyY
+      })
       .setPrivacyText(customConfigParams.privacyText[0], customConfigParams.privacyText[1])
       .setUncheckedImgPath(customConfigParams.privacyUncheckedImage)
       .setCheckedImgPath(customConfigParams.privacyCheckedImage)
       .setPrivacyState(customConfigParams.privacyCheckEnable)
-      .setPrivacyTextCenterGravity(customConfigParams.privacyTextGravityMode ? customConfigParams.privacyTextGravityMode.toLowerCase() === State.TEXT_MODE : true)
+      .setPrivacyTextCenterGravity(customConfigParams.privacyTextGravityMode ?
+        customConfigParams.privacyTextGravityMode.toLowerCase() === State.TEXT_MODE : true)
       .setPrivacyTextSize(customConfigParams.privacyTextSize)
       .setPrivacyCheckboxSize(customConfigParams.privacyCheckboxSize)
-      .setPrivacyCheckboxInCenter(customConfigParams.privacyCheckboxInCenter)
-      .setEnableHintToastText(customConfigParams.enableHintToastText)
-      .setPrivacyTextBold(customConfigParams.privacyTextBold)
-      .setPrivacyUnderlineText(customConfigParams.privacyUnderlineText)
       .setPrivacyWithBookTitleMark(customConfigParams.privacyBookSymbolEnable)
       .setPrivacyNameAndUrlBeanList(privacyList)
       // 隐私协议页面
@@ -365,11 +364,10 @@ export class JVerificationModule extends TurboModule implements TM.JVerification
       .setPrivacyNavTitleTextColor(customConfigParams.privacyWebNavTitleColor)
       .setPrivacyNavTitleTextSize(customConfigParams.privacyWebNavTitleSize)
       .setPrivacyNavReturnBtnPath(customConfigParams.privacyWebNavReturnImage)
-      .setPrivacyNavTitleTextBold(customConfigParams.privacyNavTitleTextBold)
   }
 
   // 处理电信，联通隐私协议
-  getNormalPrivacyList(customConfigParams: CustomConfigParams):PrivacyBean[] {
+  getNormalPrivacyList(customConfigParams: CustomConfigParams): PrivacyBean[] {
     let privacyList: PrivacyBean[] = [];
     let privacyOne = new PrivacyBean();
     privacyOne.name = customConfigParams.privacyOne[0];
