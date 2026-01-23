@@ -46,30 +46,9 @@ export class JVerificationModule extends TurboModule implements TM.JVerification
   // 是否启用日志
   setDebug(enable: boolean): void {
     JVerificationInterface.setDebugMode(enable);
-    this.getSign()
-    this.getAppIdentifier()
   }
 
-  // 获取应用签名 delete
-  getSign(): string {
-    let bundleFlags = bundleManager.BundleFlag.GET_BUNDLE_INFO_WITH_SIGNATURE_INFO;
-    let bundleInfo = bundleManager.getBundleInfoForSelfSync(bundleFlags);
-    console.log('twx getSign = ',
-      bundleInfo.signatureInfo.fingerprint);
-    return bundleInfo.signatureInfo.fingerprint;
-  }
-
-  // 获取应用唯一标识 delete
-  getAppIdentifier(): void {
-    let bundleFlags = bundleManager.BundleFlag.GET_BUNDLE_INFO_WITH_APPLICATION |
-    bundleManager.BundleFlag.GET_BUNDLE_INFO_WITH_SIGNATURE_INFO;
-    bundleManager.getBundleInfoForSelf(bundleFlags).then((data) => {
-      console.log('twx appIdentifier = ',
-        data.signatureInfo.appIdentifier);
-    })
-  }
-
-  // 初始化SDK   入参数不一致
+  // 初始化SDK
   setupWithConfig(params: JVerificationInitParams,
     callback: (result: initResult) => void): void {
     uiContext = this.ctx.getUIContext()!;
@@ -111,7 +90,7 @@ export class JVerificationModule extends TurboModule implements TM.JVerification
     JVerificationInterface.clearPreLoginCache();
   }
 
-  // SDK请求授权一键登录 loginAuth
+  // SDK请求授权一键登录
   getAuthorizationWithController(enable: boolean): void {
     let settings: JVerificationLoginSettings = new JVerificationLoginSettings(uiContext);
     settings.autoFinish = enable;
@@ -164,12 +143,16 @@ export class JVerificationModule extends TurboModule implements TM.JVerification
   }
 
   //处理移动资源路径
-  handleImageSrc(imageSrc: string): string | null {
+  handleImageSrc(imageSrc: string): Resource | string | null {
     if (imageSrc === undefined) {
       return null;
     }
-    const str = State.PREFIX_PATH.concat(imageSrc);
-    return str;
+    if (imageSrc.startsWith(State.PREFIX)) {
+      return imageSrc
+    } else {
+      const str = State.PREFIX_PATH.concat(imageSrc);
+      return $r(str)
+    }
   }
 
   // 处理移动隐私协议条款
