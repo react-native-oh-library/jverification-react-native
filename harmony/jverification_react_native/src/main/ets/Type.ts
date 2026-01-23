@@ -138,5 +138,6 @@ export enum State {
   DIALOG_HEIGHT = '45%',
   MASK_WIDTH = '90%',
   MASK_X = '5%',
-  MASK_Y = '30%'
+  MASK_Y = '30%',
+  PREFIX = 'http'
 }
