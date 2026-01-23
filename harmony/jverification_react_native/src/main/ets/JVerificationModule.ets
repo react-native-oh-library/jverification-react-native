@@ -28,7 +28,6 @@ import {
   PrivacyBean
 } from '@jg/verify';
 import { UIContext, window } from '@kit.ArkUI'
-import { bundleManager } from "@kit.AbilityKit";
 
 let uiContext: UIContext;
 
@@ -280,15 +279,15 @@ export class JVerificationModule extends TurboModule implements TM.JVerification
       })
 
     if (imagePathCM) {
-      builderCM.setLoginBtnImgPath($r(imagePathCM));
+      builderCM.setLoginBtnImgPath(imagePathCM);
     }
 
     if (imageDisPathCM) {
-      builderCM.setLoginBtnDisabledImgPath($r(imageDisPathCM));
+      builderCM.setLoginBtnDisabledImgPath(imageDisPathCM);
     }
 
     if (checkSrcCM && unCheckSrcCM) {
-      builderCM.setCheckBoxImg($r(checkSrcCM), $r(unCheckSrcCM));
+      builderCM.setCheckBoxImg(checkSrcCM, unCheckSrcCM);
     }
     builder.setCmUIConfig(builderCM);
   }
